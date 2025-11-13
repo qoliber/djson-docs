@@ -1,0 +1,22 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{product.name}}",
+  "description": "@djson substr {{product.description}} 0 160",
+  "sku": "{{product.sku}}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{{product.brand}}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "@djson number_format {{product.price}} 2",
+    "priceCurrency": "USD",
+    "@djson if product.stock > 0": {
+      "availability": "https://schema.org/InStock"
+    },
+    "@djson else": {
+      "availability": "https://schema.org/OutOfStock"
+    }
+  }
+}

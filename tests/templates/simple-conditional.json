@@ -1,0 +1,13 @@
+{
+  "user": {
+    "name": "{{user.name}}",
+    "@djson if user.age >= 18": {
+      "status": "adult",
+      "canVote": true
+    },
+    "@djson else": {
+      "status": "minor",
+      "canVote": false
+    }
+  }
+}

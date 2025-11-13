@@ -1,0 +1,12 @@
+{
+  "user": {
+    "name": "{{user.name}}",
+    "@djson exists user.email": {
+      "contact": "{{user.email}}"
+    },
+    "@djson exists user.premium": {
+      "badge": "Premium Member",
+      "tier": "{{user.premium.tier}}"
+    }
+  }
+}

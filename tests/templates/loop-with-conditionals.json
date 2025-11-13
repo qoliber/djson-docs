@@ -1,0 +1,16 @@
+{
+  "products": {
+    "@djson for products as product": {
+      "id": "{{product.id}}",
+      "name": "{{product.name}}",
+      "price": "{{product.price}}",
+      "@djson if product.stock > 0": {
+        "availability": "In Stock",
+        "quantity": "{{product.stock}}"
+      },
+      "@djson else": {
+        "availability": "Out of Stock"
+      }
+    }
+  }
+}

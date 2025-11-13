@@ -1,0 +1,18 @@
+{
+  "store": "{{storeName}}",
+  "categories": {
+    "@djson for categories as category": {
+      "id": "{{category.id}}",
+      "name": "@djson upper {{category.name}}",
+      "products": {
+        "@djson for category.products as product": {
+          "name": "{{product.name}}",
+          "price": "@djson number_format {{product.price}} 2",
+          "@djson if product.featured": {
+            "badge": "Featured"
+          }
+        }
+      }
+    }
+  }
+}

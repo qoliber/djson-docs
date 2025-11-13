@@ -1,0 +1,8 @@
+{
+  "product": {
+    "name": "@djson upper {{product.name}}",
+    "slug": "@djson slug {{product.name}}",
+    "price": "@djson number_format {{product.price}} 2",
+    "description": "@djson substr {{product.description}} 0 100"
+  }
+}

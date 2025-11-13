@@ -1,0 +1,13 @@
+{
+  "account": {
+    "username": "{{user.username}}",
+    "@djson unless user.verified": {
+      "warning": "Please verify your email",
+      "status": "unverified"
+    },
+    "@djson else": {
+      "status": "verified",
+      "verifiedAt": "{{user.verifiedAt}}"
+    }
+  }
+}

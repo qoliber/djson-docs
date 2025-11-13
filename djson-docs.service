@@ -1,0 +1,17 @@
+[Unit]
+Description=DJSON Documentation VitePress Site
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+Type=simple
+User=djson
+WorkingDirectory=/home/djson/public_html
+ExecStart=/usr/bin/npm run docs:serve
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/djson-docs.log
+StandardError=append:/var/log/djson-docs-error.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,27 @@
+{
+  "name": "djson",
+  "version": "1.0.0",
+  "description": "A lightweight PHP library for creating dynamic JSON with loops, conditionals, and variables. Think of it as a lean templating engine specifically designed for JSON generation.",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "json",
+    "template",
+    "php",
+    "api",
+    "dynamic"
+  ],
+  "author": "Qoliber <info@qoliber.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qoliber/djson"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

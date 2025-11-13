@@ -359,5 +359,5 @@ Directives are processed recursively. Deep nesting works but may impact performa
 ## See Also
 
 - [Functions Reference](/api/functions) - Transform data with functions
-- [Validation](/api/validation) - Validate templates before processing
+- [Validation](/guide/validation) - Validate templates before processing
 - [Custom Directives](/guide/custom-directives) - Create your own directives

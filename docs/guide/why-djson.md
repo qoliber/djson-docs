@@ -75,18 +75,20 @@ $json = json_encode([
 
 ```php
 // Define structure once, reuse everywhere
-$template = [
-    'products' => [
-        '@djson for products as product',
-        'name' => '{​{product.name}}',
-        'price' => '{​{product.price}}',
-        'discount' => [
-            '@djson if product.onSale',
-            'amount' => '{​{product.discount}}',
-            'price' => '{​{product.salePrice}}'
-        ]
-    ]
-];
+$template = '{
+  "products": {
+    "@djson for products as product": {
+      "name": "{​{product.name}}",
+      "price": "{​{product.price}}",
+      "@djson if product.onSale": {
+        "discount": {
+          "amount": "{​{product.discount}}",
+          "price": "{​{product.salePrice}}"
+        }
+      }
+    }
+  }
+}';
 
 // Use anywhere
 $api = $djson->process($template, $apiData);
@@ -104,17 +106,20 @@ $test = $djson->process($template, $mockData);
 
 ```php
 // One template definition
-$template = [
-    '@djson if user.email',
-    'email' => '{​{user.email}}',
-    '@djson if user.phone',
-    'phone' => '{​{user.phone}}',
-    '@djson if user.address',
-    'address' => [
-        'street' => '{​{user.address.street}}',
-        'city' => '{​{user.address.city}}'
-    ]
-];
+$template = '{
+  "@djson if user.email": {
+    "email": "{​{user.email}}"
+  },
+  "@djson if user.phone": {
+    "phone": "{​{user.phone}}"
+  },
+  "@djson if user.address": {
+    "address": {
+      "street": "{​{user.address.street}}",
+      "city": "{​{user.address.city}}"
+    }
+  }
+}';
 
 // No repetitive if-else blocks
 ```
@@ -122,16 +127,16 @@ $template = [
 ### Type Safety
 
 ```php
-$template = [
-    'id' => '{​{id}}',        // Number stays number
-    'active' => '{​{active}}', // Boolean stays boolean
-    'price' => '{​{price}}'   // Float stays float
-];
+$template = '{
+  "id": "{​{id}}",
+  "active": "{​{active}}",
+  "price": "{​{price}}"
+}';
 
 $data = [
-    'id' => 123,
-    'active' => true,
-    'price' => 99.99
+    'id' => 123,         // Number stays number
+    'active' => true,    // Boolean stays boolean
+    'price' => 99.99     // Float stays float
 ];
 
 // Types are preserved automatically

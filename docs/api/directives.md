@@ -36,7 +36,9 @@ Iterates over an array or collection.
         {"name": "Alice", "email": "alice@example.com"},
         {"name": "Bob", "email": "bob@example.com"}
     ]
-}
+];
+
+$result = $djson->process($template, $data);
 ```
 
 **Output:**
@@ -316,10 +318,9 @@ Create computed variables from expressions.
 **Arithmetic operations:**
 ```json
 {
-    "@djson set total = price * quantity": {},
+    "total": "@djson set total = price * quantity",
     "price": "{{price}}",
     "quantity": "{{quantity}}",
-    "total": "{{total}}"
 }
 ```
 

@@ -39,18 +39,20 @@ This approach:
 DJson separates your JSON structure from the logic:
 
 ```php
-$template = [
-    'products' => [
-        '@djson for products as product',
-        'name' => '{​{product.name}}',
-        'price' => '{​{product.price}}',
-        'discount' => [
-            '@djson if product.onSale',
-            'original' => '{​{product.price}}',
-            'sale' => '{​{product.salePrice}}'
-        ]
-    ]
-];
+$template = '{
+  "products": {
+    "@djson for products as product": {
+      "name": "{​{product.name}}",
+      "price": "{​{product.price}}",
+      "@djson if product.onSale": {
+        "discount": {
+          "original": "{​{product.price}}",
+          "sale": "{​{product.salePrice}}"
+        }
+      }
+    }
+  }
+}';
 
 $djson = new DJson();
 $result = $djson->process($template, $data);

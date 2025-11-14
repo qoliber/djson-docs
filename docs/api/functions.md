@@ -348,17 +348,18 @@ See [Custom Functions](/guide/custom-functions) for detailed guide.
 ## Complete Example
 
 ```php
-$template = [
-    'products' => [
-        '@djson for products as product',
-        'name' => '@djson upper|trim {​{product.name}}',
-        'slug' => '@djson slug {​{product.name}}',
-        'price' => '@djson number_format {​{product.price}} 2',
-        'description' => '@djson substr {​{product.description}} 0 100',
-        'tags' => '@djson join {​{product.tags}} ", "',
-        'created' => '@djson date {​{product.timestamp}} "F j, Y"'
-    ]
-];
+$template = '{
+  "products": {
+    "@djson for products as product": {
+      "name": "@djson upper|trim {​{product.name}}",
+      "slug": "@djson slug {​{product.name}}",
+      "price": "@djson number_format {​{product.price}} 2",
+      "description": "@djson substr {​{product.description}} 0 100",
+      "tags": "@djson join {​{product.tags}} \\", \\"",
+      "created": "@djson date {​{product.timestamp}} \\"F j, Y\\""
+    }
+  }
+}';
 
 $data = [
     'products' => [

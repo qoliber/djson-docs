@@ -15,13 +15,14 @@ Iterates over an array or collection.
 
 **Example:**
 ```php
-$template = [
-    'users' => [
-        '@djson for users as user',
-        'name' => '{​{user.name}}',
-        'email' => '{​{user.email}}'
-    ]
-];
+$template = '{
+  "users": {
+    "@djson for users as user": {
+      "name": "{​{user.name}}",
+      "email": "{​{user.email}}"
+    }
+  }
+}';
 
 $data = [
     'users' => [
@@ -29,6 +30,8 @@ $data = [
         ['name' => 'Bob', 'email' => 'bob@example.com']
     ]
 ];
+
+$result = $djson->process($template, $data);
 ```
 
 **Output:**
@@ -54,15 +57,16 @@ Inside a loop, you have access to special variables:
 
 **Example with loop variables:**
 ```php
-$template = [
-    'items' => [
-        '@djson for items as item',
-        'position' => '{​{_index}}',
-        'value' => '{​{item}}',
-        'isFirst' => '{​{_first}}',
-        'isLast' => '{​{_last}}'
-    ]
-];
+$template = '{
+  "items": {
+    "@djson for items as item": {
+      "position": "{​{_index}}",
+      "value": "{​{item}}",
+      "isFirst": "{​{_first}}",
+      "isLast": "{​{_last}}"
+    }
+  }
+}';
 ```
 
 ## Conditional Directives
@@ -78,13 +82,12 @@ Include content only if condition is truthy.
 
 **Example:**
 ```php
-$template = [
-    'premium' => [
-        '@djson if user.isPremium',
-        'status' => 'Premium Member',
-        'features' => 'All unlocked'
-    ]
-];
+$template = '{
+  "@djson if user.isPremium": {
+    "status": "Premium Member",
+    "features": "All unlocked"
+  }
+}';
 
 $data = ['user' => ['isPremium' => true]];
 ```
@@ -118,12 +121,11 @@ Include content only if condition is falsy (opposite of `if`).
 
 **Example:**
 ```php
-$template = [
-    'error' => [
-        '@djson unless isValid',
-        'message' => 'Validation failed'
-    ]
-];
+$template = '{
+  "@djson unless isValid": {
+    "message": "Validation failed"
+  }
+}';
 
 $data = ['isValid' => false];
 // Shows error message
@@ -140,15 +142,14 @@ Include content only if variable exists and is not null.
 
 **Example:**
 ```php
-$template = [
-    'optional' => [
-        '@djson exists user.bio',
-        'bio' => '{​{user.bio}}'
-    ]
-];
+$template = '{
+  "@djson exists user.bio": {
+    "bio": "{​{user.bio}}"
+  }
+}';
 
 $data = ['user' => ['name' => 'John']];
-// 'optional' is not included because 'bio' doesn't exist
+// Content is not included because 'bio' doesn't exist
 ```
 
 ### @djson else
@@ -162,25 +163,29 @@ Fallback content when previous condition fails.
 
 **Example:**
 ```php
-$template = [
-    '@djson if user.isPremium',
-    'status' => 'Premium',
-    '@djson else',
-    'status' => 'Free'
-];
+$template = '{
+  "@djson if user.isPremium": {
+    "status": "Premium"
+  },
+  "@djson else": {
+    "status": "Free"
+  }
+}';
 
 $data = ['user' => ['isPremium' => false]];
-// Result: ['status' => 'Free']
+// Result: {"status": "Free"}
 ```
 
 **With @djson unless:**
 ```php
-$template = [
-    '@djson unless errors',
-    'success' => true,
-    '@djson else',
-    'errors' => '{​{errors}}'
-];
+$template = '{
+  "@djson unless errors": {
+    "success": true
+  },
+  "@djson else": {
+    "errors": "{​{errors}}"
+  }
+}';
 ```
 
 ## Pattern Matching
@@ -199,36 +204,44 @@ Pattern matching similar to PHP's match expression.
 
 **Example:**
 ```php
-$template = [
-    '@djson match user.role',
-    '@djson case admin' => [
-        'permissions' => 'full',
-        'access' => 'all'
-    ],
-    '@djson case editor' => [
-        'permissions' => 'edit',
-        'access' => 'content'
-    ],
-    '@djson default' => [
-        'permissions' => 'read',
-        'access' => 'public'
-    ]
-];
+$template = '{
+  "@djson match user.role": {
+    "@djson case admin": {
+      "permissions": "full",
+      "access": "all"
+    },
+    "@djson case editor": {
+      "permissions": "edit",
+      "access": "content"
+    },
+    "@djson default": {
+      "permissions": "read",
+      "access": "public"
+    }
+  }
+}';
 
 $data = ['user' => ['role' => 'admin']];
 ```
 
 **With quoted strings:**
-```php
-'@djson match status',
-'@djson case "active"' => ['color' => 'green'],
-'@djson case "pending"' => ['color' => 'yellow'],
-'@djson default' => ['color' => 'gray']
+```json
+{
+  "@djson match status": {
+    "@djson case \"active\"": {"color": "green"},
+    "@djson case \"pending\"": {"color": "yellow"},
+    "@djson default": {"color": "gray"}
+  }
+}
 ```
 
 **Both `match` and `switch` are supported:**
-```php
-'@djson switch priority'  // Same as match
+```json
+{
+  "@djson switch priority": {
+    "@djson case high": {"color": "red"}
+  }
+}
 ```
 
 ## Computed Values
@@ -244,15 +257,15 @@ Create computed variables from expressions.
 
 **Arithmetic operations:**
 ```php
-$template = [
-    '@djson set total = price * quantity',
-    'price' => '{​{price}}',
-    'quantity' => '{​{quantity}}',
-    'total' => '{​{total}}'
-];
+$template = '{
+  "@djson set total = price * quantity": {},
+  "price": "{​{price}}",
+  "quantity": "{​{quantity}}",
+  "total": "{​{total}}"
+}';
 
 $data = ['price' => 10, 'quantity' => 5];
-// Result: ['price' => 10, 'quantity' => 5, 'total' => 50]
+// Result: {"price": 10, "quantity": 5, "total": 50}
 ```
 
 **Supported operators:**
@@ -282,38 +295,40 @@ Directives can be nested for complex logic:
 
 **Nested conditions:**
 ```php
-$template = [
-    '@djson if hasAccess',
-    'content' => [
-        '@djson if isPremium',
-        'premiumContent' => '{​{content.premium}}'
-    ]
-];
+$template = '{
+  "@djson if hasAccess": {
+    "@djson if isPremium": {
+      "premiumContent": "{​{content.premium}}"
+    }
+  }
+}';
 ```
 
 **Loops with conditions:**
 ```php
-$template = [
-    'items' => [
-        '@djson for items as item',
-        'approved' => [
-            '@djson if item.isApproved',
-            'name' => '{​{item.name}}'
-        ]
-    ]
-];
+$template = '{
+  "items": {
+    "@djson for items as item": {
+      "@djson if item.isApproved": {
+        "name": "{​{item.name}}"
+      }
+    }
+  }
+}';
 ```
 
 **Match in loop:**
 ```php
-$template = [
-    'orders' => [
-        '@djson for orders as order',
-        '@djson match order.status',
-        '@djson case shipped' => ['color' => 'green'],
-        '@djson case pending' => ['color' => 'yellow']
-    ]
-];
+$template = '{
+  "orders": {
+    "@djson for orders as order": {
+      "@djson match order.status": {
+        "@djson case shipped": {"color": "green"},
+        "@djson case pending": {"color": "yellow"}
+      }
+    }
+  }
+}';
 ```
 
 ## Best Practices

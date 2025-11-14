@@ -2,12 +2,21 @@
 
 ## Installation Steps
 
-### 1. Copy the service file to systemd directory
+### 1. Create environment file and build (optional - for GTM tracking)
+```bash
+cd /home/djson/public_html
+cp .env.example .env
+nano .env  # Add: VITE_GTM_ID=GTM-XXXXXXX
+npm run docs:build  # Vite loads .env automatically during build
+```
+Note: The .env file is read during `npm run docs:build`, not at serve time.
+
+### 2. Copy the service file to systemd directory
 ```bash
 sudo cp djson-docs.service /etc/systemd/system/
 ```
 
-### 2. Create log files
+### 3. Create log files
 ```bash
 sudo touch /var/log/djson-docs.log
 sudo touch /var/log/djson-docs-error.log
@@ -15,17 +24,17 @@ sudo chown djson:djson /var/log/djson-docs.log
 sudo chown djson:djson /var/log/djson-docs-error.log
 ```
 
-### 3. Reload systemd daemon
+### 4. Reload systemd daemon
 ```bash
 sudo systemctl daemon-reload
 ```
 
-### 4. Enable the service (start on boot)
+### 5. Enable the service (start on boot)
 ```bash
 sudo systemctl enable djson-docs
 ```
 
-### 5. Start the service
+### 6. Start the service
 ```bash
 sudo systemctl start djson-docs
 ```
@@ -52,7 +61,8 @@ tail -f /var/log/djson-docs-error.log
 
 ## Important Notes
 
-- **Build first**: Always run `npm run docs:build` before starting the service
+- **Environment file**: Create `.env` with `VITE_GTM_ID` for GTM tracking (optional, loaded during build by Vite)
+- **Build first**: Always run `npm run docs:build` before starting the service (this is when .env is loaded)
 - **Port**: The service runs on port 3000
 - **User**: Running as user `djson`
 - **Working Directory**: `/home/djson/public_html`
@@ -89,3 +99,14 @@ If the service fails to start:
    ```bash
    sudo journalctl -u djson-docs -n 50
    ```
+
+6. If GTM not appearing, rebuild with .env file:
+   ```bash
+   cd /home/djson/public_html
+   ls -la .env  # Verify .env exists
+   cat .env     # Check VITE_GTM_ID is set
+   npm run docs:build  # Rebuild to embed GTM
+   sudo systemctl restart djson-docs
+   ```
+
+For more information about Google Tag Manager setup, see `GTM_SETUP.md`

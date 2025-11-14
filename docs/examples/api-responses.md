@@ -215,32 +215,32 @@ $template = [
 ## Status Endpoint
 
 ```php
-$template = [
-    'status' => '{​{status}}',
-    'version' => '{​{version}}',
-    'services' => [
-        '@djson for services as service',
-        'name' => '{​{service.name}}',
-        'status' => [
-            '@djson match service.status',
-            '@djson case "healthy"' => [
-                'code' => 'OK',
-                'color' => 'green'
-            ],
-            '@djson case "degraded"' => [
-                'code' => 'WARNING',
-                'color' => 'yellow'
-            ],
-            '@djson default' => [
-                'code' => 'ERROR',
-                'color' => 'red'
-            ]
-        ],
-        'responseTime' => '{​{service.responseTime}}',
-        'lastChecked' => '@djson date {​{service.lastCheck}} "c"'
-    ],
-    'timestamp' => '{​{timestamp}}'
-];
+$template = '{
+    "status": "{{status}}",
+    "version": "{{version}}",
+    "services": {
+        "@djson for services as service": {
+            "name": "{{service.name}}",
+            "@djson match service.status": {
+                "@djson case \\"healthy\\"": {
+                    "code": "OK",
+                    "color": "green"
+                },
+                "@djson case \\"degraded\\"": {
+                    "code": "WARNING",
+                    "color": "yellow"
+                },
+                "@djson default": {
+                    "code": "ERROR",
+                    "color": "red"
+                }
+            },
+            "responseTime": "{{service.responseTime}}",
+            "lastChecked": "@djson date {{service.lastCheck}} \\"c\\""
+        }
+    },
+    "timestamp": "{{timestamp}}"
+}';
 ```
 
 ## Bulk Operation Response

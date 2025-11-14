@@ -167,14 +167,13 @@ $data = ['items' => null];
 {
   "orders": {
     "@djson for orders as order": {
-      "orderId": "{​{order.id}​}",
+      "orderId": "{{order.id}}",
       "items": {
         "@djson for order.items as item": {
-          "@djson set lineTotal = item.price * item.quantity": {
-            "product": "{​{item.name}​}",
-            "quantity": "{​{item.quantity}​}",
-            "total": "{​{lineTotal}​}"
-          }
+          "@djson set lineTotal = item.price * item.quantity": {},
+          "product": "{{item.name}}",
+          "quantity": "{{item.quantity}}",
+          "total": "{{lineTotal}}"
         }
       }
     }

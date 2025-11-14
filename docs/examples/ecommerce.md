@@ -26,60 +26,58 @@ $template = '{
                     "id": "{​{product.id}​}",
                     "name": "{​{product.name}​}",
                     "slug": "@djson slug {​{product.name}​}",
-                    "@djson set discount = product.price - product.salePrice": {
-                        "@djson set discountPercent = (discount / product.price) * 100": {
-                            "pricing": {
-                                "regular": "@djson number_format {​{product.price}​} 2",
-                                "@djson if product.onSale": {
-                                    "sale": {
-                                        "price": "@djson number_format {​{product.salePrice}​} 2",
-                                        "savings": "@djson number_format {​{discount}​} 2",
-                                        "percent": "@djson round {​{discountPercent}​} 0"
-                                    }
+                    "@djson set discount = product.price - product.salePrice": {},
+                    "@djson set discountPercent = (discount / product.price) * 100": {},
+                    "pricing": {
+                        "regular": "@djson number_format {​{product.price}​} 2",
+                        "@djson if product.onSale": {
+                            "sale": {
+                                "price": "@djson number_format {​{product.salePrice}​} 2",
+                                "savings": "@djson number_format {​{discount}​} 2",
+                                "percent": "@djson round {​{discountPercent}​} 0"
+                            }
+                        }
+                    },
+                    "@djson match product.stock": {
+                        "@djson case 0": {
+                            "stock": {
+                                "status": "out_of_stock",
+                                "message": "Out of Stock",
+                                "available": false
+                            }
+                        },
+                        "@djson default": {
+                            "@djson if product.stock <= 5": {
+                                "stock": {
+                                    "status": "low_stock",
+                                    "message": "Only {​{product.stock}​} left!",
+                                    "available": true
                                 }
                             },
-                            "@djson match product.stock": {
-                                "@djson case 0": {
-                                    "stock": {
-                                        "status": "out_of_stock",
-                                        "message": "Out of Stock",
-                                        "available": false
-                                    }
-                                },
-                                "@djson default": {
-                                    "@djson if product.stock <= 5": {
-                                        "stock": {
-                                            "status": "low_stock",
-                                            "message": "Only {​{product.stock}​} left!",
-                                            "available": true
-                                        }
-                                    },
-                                    "@djson else": {
-                                        "stock": {
-                                            "status": "in_stock",
-                                            "message": "In Stock",
-                                            "available": true
-                                        }
-                                    }
-                                }
-                            },
-                            "@djson if product.features": {
-                                "features": {
-                                    "highlights": {
-                                        "@djson for product.features as feature": {
-                                            "name": "{​{feature.name}​}",
-                                            "value": "{​{feature.value}​}"
-                                        }
-                                    }
-                                }
-                            },
-                            "@djson if product.reviews": {
-                                "rating": {
-                                    "average": "@djson round {​{product.averageRating}​} 1",
-                                    "count": "{​{product.reviewCount}​}",
-                                    "stars": "{​{product.averageRating >= 4 ? \\"⭐⭐⭐⭐⭐\\" : \\"⭐⭐⭐\\"}​}"
+                            "@djson else": {
+                                "stock": {
+                                    "status": "in_stock",
+                                    "message": "In Stock",
+                                    "available": true
                                 }
                             }
+                        }
+                    },
+                    "@djson if product.features": {
+                        "features": {
+                            "highlights": {
+                                "@djson for product.features as feature": {
+                                    "name": "{​{feature.name}​}",
+                                    "value": "{​{feature.value}​}"
+                                }
+                            }
+                        }
+                    },
+                    "@djson if product.reviews": {
+                        "rating": {
+                            "average": "@djson round {​{product.averageRating}​} 1",
+                            "count": "{​{product.reviewCount}​}",
+                            "stars": "{​{product.averageRating >= 4 ? \\"⭐⭐⭐⭐⭐\\" : \\"⭐⭐⭐\\"}​}"
                         }
                     }
                 }
@@ -267,12 +265,10 @@ echo $json;
 ### 2. **Computed Discounts**
 ```json
 {
-    "@djson set discount = product.price - product.salePrice": {
-        "@djson set discountPercent = (discount / product.price) * 100": {
-            "savings": "{​{discount}​}",
-            "percent": "{​{discountPercent}​}"
-        }
-    }
+    "@djson set discount = product.price - product.salePrice": {},
+    "@djson set discountPercent = (discount / product.price) * 100": {},
+    "savings": "{{discount}}",
+    "percent": "{{discountPercent}}"
 }
 ```
 
@@ -346,12 +342,11 @@ $template = '{
             "@djson for products as product": {
                 "id": "{​{product.id}​}",
                 "name": "{​{product.name}​}",
-                "@djson set finalPrice = product.onSale ? product.salePrice : product.price": {
-                    "price": {
-                        "amount": "{​{finalPrice}​}",
-                        "currency": "USD",
-                        "formatted": "@djson number_format {​{finalPrice}​} 2"
-                    }
+                "@djson set finalPrice = product.onSale ? product.salePrice : product.price": {},
+                "price": {
+                    "amount": "{​{finalPrice}​}",
+                    "currency": "USD",
+                    "formatted": "@djson number_format {​{finalPrice}​} 2"
                 },
                 "availability": "{​{product.stock > 0 ? \\"available\\" : \\"unavailable\\"}​}"
             }
@@ -372,24 +367,20 @@ $template = '{
     "cart": {
         "items": {
             "@djson for cart.items as item": {
-                "@djson set lineTotal = item.price * item.quantity": {
-                    "product": "{​{item.name}​}",
-                    "quantity": "{​{item.quantity}​}",
-                    "unitPrice": "@djson number_format {​{item.price}​} 2",
-                    "total": "@djson number_format {​{lineTotal}​} 2"
-                }
+                "@djson set lineTotal = item.price * item.quantity": {},
+                "product": "{​{item.name}​}",
+                "quantity": "{​{item.quantity}​}",
+                "unitPrice": "@djson number_format {​{item.price}​} 2",
+                "total": "@djson number_format {​{lineTotal}​} 2"
             }
         },
-        "@djson set subtotal = cart.subtotal": {
-            "@djson set tax = subtotal * 0.15": {
-                "@djson set grandTotal = subtotal + tax": {
-                    "summary": {
-                        "subtotal": "@djson number_format {​{subtotal}​} 2",
-                        "tax": "@djson number_format {​{tax}​} 2",
-                        "total": "@djson number_format {​{grandTotal}​} 2"
-                    }
-                }
-            }
+        "@djson set subtotal = cart.subtotal": {},
+        "@djson set tax = subtotal * 0.15": {},
+        "@djson set grandTotal = subtotal + tax": {},
+        "summary": {
+            "subtotal": "@djson number_format {​{subtotal}​} 2",
+            "tax": "@djson number_format {​{tax}​} 2",
+            "total": "@djson number_format {​{grandTotal}​} 2"
         }
     }
 }';

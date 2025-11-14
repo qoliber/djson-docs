@@ -1,19 +1,29 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, loadEnv } from 'vitepress'
+import { fileURLToPath } from 'node:url'
 
-const gtmId = process.env.VITE_GTM_ID
+export default defineConfig(({ mode }) => {
+  // Load environment variables
+  const env = loadEnv(mode, fileURLToPath(new URL('../../', import.meta.url)))
+  const gtmId = env.VITE_GTM_ID
 
-export default defineConfig({
+  return {
   title: 'DJson',
   description: 'Dynamic JSON templating library for PHP',
 
   head: gtmId ? [
-    // Google Tag Manager
+    // Google Tag Manager - Head Script
     ['script', {}, `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${gtmId}');`]
   ] : [],
+
+  // Google Tag Manager - Body noscript (proper GTM implementation)
+  transformHtml: gtmId ? (code) => {
+    const noscript = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`
+    return code.replace(/<body>/, `<body>\n${noscript}`)
+  } : undefined,
 
   markdown: {
     theme: 'material-theme-palenight',
@@ -113,4 +123,4 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       text: 'Edit this page on GitHub'
     }
   }
-})
+}})

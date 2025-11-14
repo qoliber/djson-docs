@@ -53,6 +53,20 @@ GTM is configured via environment variables, keeping your container ID secure an
 
 ## How It Works
 
+This implementation follows **Google's official GTM installation guide** with both head and body tags:
+
+### Implementation Details:
+
+1. **Head Script** (`<head>` section):
+   - GTM library loader with dataLayer initialization
+   - Configured via VitePress `head` array
+
+2. **Body Noscript** (`<body>` section):
+   - Fallback iframe for users with JavaScript disabled
+   - Injected using VitePress `transformHtml` hook
+
+### Build Process:
+
 - **Vite automatically loads `.env` files** during build and dev commands
 - Environment variables prefixed with `VITE_` are embedded into the build at **build time**
 - The GTM script is **baked into the static HTML** during `npm run docs:build`
@@ -64,8 +78,18 @@ GTM is configured via environment variables, keeping your container ID secure an
 
 After building and deploying:
 
-1. **Check the HTML source:**
-   View page source and search for `googletagmanager.com` to verify the script is present
+1. **Check the HTML source for both GTM tags:**
+   ```bash
+   # Check head script
+   grep -r "gtm.js" docs/.vitepress/dist/index.html
+
+   # Check body noscript
+   grep -r "ns.html" docs/.vitepress/dist/index.html
+   ```
+
+   Or view page source and verify:
+   - `<head>` contains: `gtm.js?id=GTM-XXXXXXX`
+   - `<body>` contains: `<noscript><iframe src="...ns.html?id=GTM-XXXXXXX"`
 
 2. **Use GTM Preview Mode:**
    - Go to your GTM container
@@ -75,8 +99,9 @@ After building and deploying:
 
 3. **Check browser console:**
    ```javascript
-   // Should log your GTM container ID
+   // Should log your GTM container info
    console.log(window.google_tag_manager)
+   console.log(dataLayer)
    ```
 
 ## Multiple Environments
@@ -113,6 +138,24 @@ VITE_GTM_ID=GTM-PROD5678
 - Verify GTM is in the built HTML: `grep -r "googletagmanager" docs/.vitepress/dist/`
 - Restart service: `sudo systemctl restart djson-docs`
 - Check logs: `sudo journalctl -u djson-docs -n 50`
+
+## Technical Implementation
+
+This project uses a proper GTM implementation that works around VitePress limitations:
+
+**The Challenge:** VitePress only supports head injection natively, but GTM requires both head and body tags.
+
+**The Solution:**
+- **Head script**: Uses VitePress `head` config array
+- **Body noscript**: Uses `transformHtml` hook to inject after `<body>` tag
+
+**Code reference:** See `docs/.vitepress/config.js:9-22`
+
+This approach:
+- ✅ Follows Google's official GTM installation guide
+- ✅ Provides fallback tracking for no-JS users
+- ✅ Works with VitePress build system
+- ✅ Keeps configuration DRY (GTM ID defined once)
 
 ## Security Notes
 

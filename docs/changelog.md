@@ -10,6 +10,98 @@ All notable changes to DJson will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-11-16
+
+### 🚀 Object Support Release
+
+DJson now supports PHP objects in addition to arrays, making it work seamlessly with object-oriented codebases, ORMs, and entity classes.
+
+### Added
+
+#### Full PHP Object Support
+- **Smart Property Access** - Automatic resolution through multiple strategies:
+  - Getter methods: `getName()` for property `name`
+  - Boolean methods: `isActive()` for property `active`
+  - Has methods: `hasPermission()` for property `permission`
+  - Public properties: Direct access fallback
+- **Nested Object Access** - Deep navigation with dot notation: `{{user.profile.address.city}}`
+- **Object Collections** - Loop over arrays of objects with `@djson for`
+- **Mixed Data Support** - Seamlessly mix arrays and objects in the same template
+
+#### Enhanced Core
+- **DJson.php** - New `getObjectProperty()` method for intelligent property resolution
+- **FunctionProcessor.php** - Improved parameter parsing for quoted strings with spaces
+- **Better Function Arguments** - Enhanced handling of escaped quotes and complex parameters
+
+#### Testing
+- **531 New Tests** - Comprehensive object support test suite (`ObjectSupportTest.php`)
+  - Public and private property access
+  - All getter method types (`get*()`, `is*()`, `has*()`)
+  - Nested object structures (4+ levels deep)
+  - Objects in loops and conditionals
+  - Functions applied to object properties
+  - Mixed array/object scenarios
+
+### Example
+
+```php
+class Product {
+    public string $name;
+    private float $price;
+    private bool $active;
+
+    public function getPrice(): float {
+        return $this->price;
+    }
+
+    public function isActive(): bool {
+        return $this->active;
+    }
+}
+
+$product = new Product('Laptop', 999.99, true);
+
+$template = '{
+  "name": "{{product.name}}",
+  "price": "{{product.price}}",
+  "active": "{{product.active}}"
+}';
+
+$result = $djson->process($template, ['product' => $product]);
+// Works seamlessly with both public properties and getter methods
+```
+
+### Use Cases
+
+Now perfect for:
+- **Doctrine/Eloquent Entities** - Work directly with ORM objects
+- **Domain Models** - Use your business objects in templates
+- **DTOs** - Process Data Transfer Objects without conversion
+- **API Models** - Transform API response objects to JSON
+- **Legacy Code** - Integrate with existing object-oriented codebases
+
+### Compatibility
+
+- ✅ **100% Backward Compatible** - All array-based code works unchanged
+- ✅ **No Breaking Changes** - Existing templates continue to work
+- ✅ **Transparent Operation** - Automatic detection of arrays vs objects
+
+### Technical Details
+
+**Property Resolution Order:**
+1. Try `getName()` getter method
+2. Try `isActive()` boolean method
+3. Try `hasPermission()` has method
+4. Try direct public property access
+5. Return `null` if property not found
+
+**Files Changed:**
+- `src/DJson.php` (+42 lines)
+- `src/FunctionProcessor.php` (+106 lines)
+- `tests/ObjectSupportTest.php` (+531 lines)
+
+---
+
 ## [1.0.0] - 2025-11-13
 
 ### 🎉 Module Release
@@ -179,4 +271,5 @@ See [CONTRIBUTING.md](/contributing) for guidelines on submitting issues and pul
 
 ---
 
+**[1.1.0]:** Object support release - 2025-11-16
 **[1.0.0]:** Initial stable release - 2025-11-13

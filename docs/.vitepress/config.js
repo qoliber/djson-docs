@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       { text: 'Examples', link: '/examples/ecommerce' },
       { text: 'About', link: '/about' },
       {
-        text: 'v1.0.0',
+        text: 'v1.1.0',
         items: [
           { text: 'Changelog', link: '/changelog' },
           { text: 'Contributing', link: '/contributing' }

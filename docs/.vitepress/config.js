@@ -37,9 +37,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Reference', link: '/api/directives' },
       { text: 'Examples', link: '/examples/ecommerce' },
+      { text: 'Benchmark', link: '/benchmark' },
       { text: 'About', link: '/about' },
       {
-        text: 'v1.1.0',
+        text: 'v1.5.0',
         items: [
           { text: 'Changelog', link: '/changelog' },
           { text: 'Contributing', link: '/contributing' }
@@ -99,7 +100,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           items: [
             { text: 'E-commerce Catalog', link: '/examples/ecommerce' },
             { text: 'API Responses', link: '/examples/api-responses' },
-            { text: 'Schema.org JSON-LD', link: '/examples/schema-org' }
+            { text: 'Schema.org JSON-LD', link: '/examples/schema-org' },
+            { text: 'Code Examples', link: '/examples/code-examples' }
           ]
         }
       ]
